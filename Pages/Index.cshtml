@@ -1,0 +1,35 @@
+﻿@page
+@using AspNetOAuthLogin.Models
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<h1>Welcome to OAuth2 Login Demo</h1>
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <p>Hello, @User.Identity?.Name!</p>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <p><strong>You are an Admin.</strong> You have access to manage users and settings.</p>
+        <a asp-page="/Admin">Go to Admin Page</a>
+    }
+    else if (User.IsInRole("User"))
+    {
+        <p><strong>You are a User.</strong> You can view user-only content.</p>
+        <a asp-page="/User">Go to User Page</a>
+    }
+
+    <form method="post" asp-page-handler="Logout">
+        <button type="submit" class="btn btn-danger">Logout</button>
+    </form>
+}
+else
+{
+    <p>Please log in:</p>
+    <a asp-controller="Account" asp-action="ExternalLogin" asp-route-provider="Google">Login with Google</a>
+
+    <br />
+    <a asp-controller="Account" asp-action="ExternalLogin" asp-route-provider="GitHub">Login with GitHub</a>
+}
